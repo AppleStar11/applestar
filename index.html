@@ -21,12 +21,6 @@
             background-attachment: fixed;
             padding: 20px;
             min-height: 100vh;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        body.loaded {
-            opacity: 1;
         }
 
         .container {
@@ -37,16 +31,20 @@
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(5px);
-            transform: translateY(20px);
-            opacity: 0;
-            animation: slideUp 0.5s ease forwards;
         }
 
-        @keyframes slideUp {
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
+        h1 {
+            text-align: center;
+            color: #e17055;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
         }
 
         .photo-item {
@@ -57,15 +55,8 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease;
             opacity: 0;
-            transform: scale(0.9);
-            animation: fadeIn 0.3s ease forwards;
-        }
-
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s ease forwards;
         }
 
         .photo-item:hover {
@@ -77,6 +68,7 @@
             height: 200px;
             object-fit: cover;
             border-radius: 8px;
+            cursor: pointer;
         }
 
         .delete-btn {
@@ -91,11 +83,6 @@
             height: 30px;
             cursor: pointer;
             font-size: 18px;
-            transition: background 0.3s ease;
-        }
-
-        .delete-btn:hover {
-            background: rgba(231, 76, 60, 1);
         }
 
         .upload-section {
@@ -111,54 +98,11 @@
             border-radius: 25px;
             cursor: pointer;
             font-size: 16px;
-            transition: background 0.3s ease;
-            transition: all 0.3s ease;
+            transition: background 0.3s;
         }
 
         #upload-btn:hover {
             background: #d65d45;
-        }
-
-        #upload-btn:active {
-            transform: scale(0.95);
-        }
-
-        .share-section {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .share-btn {
-            background: #00b894;
-            color: white;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background 0.3s ease;
-            transition: all 0.3s ease;
-        }
-
-        .share-btn:hover {
-            background: #00a884;
-        }
-
-        .share-btn:active {
-            transform: scale(0.95);
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(45, 52, 54, 0.9);
-            color: white;
-            padding: 12px 25px;
-            border-radius: 25px;
-            display: none;
-            font-size: 14px;
         }
 
         /* 照片预览模态框 */
@@ -195,9 +139,29 @@
             margin-top: 10px;
             font-size: 14px;
             text-align: center;
+            outline: none;
+            padding: 5px;
         }
 
-        /* 加载动画 */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .photo-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
+
+        /* 添加加载动画 */
         .loading {
             display: none;
             position: fixed;
@@ -223,60 +187,19 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* 移动端适配 */
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
+        /* 添加删除动画 */
+        .photo-item.removing {
+            animation: fadeOut 0.3s ease forwards;
+        }
 
-            .container {
-                padding: 15px;
-            }
-
-            h1 {
-                font-size: 1.8em;
-            }
-
-            .photo-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-                gap: 10px;
-            }
-
-            .photo-item img {
-                height: 150px;
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: scale(0.8);
             }
         }
 
-        /* 添加背景图加载过渡效果 */
-        .bg-loaded body {
-            animation: fadeIn 1s ease-in;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* 搜索栏样式 */
-        .search-section {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        #search-input {
-            padding: 8px 15px;
-            width: 300px;
-            border: 1px solid #ddd;
-            border-radius: 20px;
-            font-size: 14px;
-            outline: none;
-        }
-
-        #search-input:focus {
-            border-color: #e17055;
-        }
-
-        /* 照片操作按钮 */
+        /* 添加新的样式 */
         .photo-actions {
             position: absolute;
             bottom: 5px;
@@ -301,85 +224,74 @@
             cursor: pointer;
             font-size: 14px;
             transition: background 0.3s;
-            transition: all 0.3s ease;
         }
 
         .action-btn:hover {
             background: rgba(0, 0, 0, 0.8);
         }
 
-        .action-btn:active {
-            transform: scale(0.95);
+        /* 添加提示框样式 */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            display: none;
+            z-index: 2000;
         }
 
-        /* 标签样式 */
-        .photo-tags {
-            margin-top: 5px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
+        /* 添加图片编辑工具栏 */
+        .edit-toolbar {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px;
+            border-radius: 20px;
+            display: none;
+            z-index: 1001;
         }
 
-        .tag {
-            background: #f0f0f0;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 12px;
+        .edit-toolbar button {
+            background: none;
+            border: none;
+            color: white;
             cursor: pointer;
+            padding: 5px 10px;
+            margin: 0 5px;
         }
 
-        .tag:hover {
-            background: #e0e0e0;
-        }
-
-        /* 拖拽样式 */
-        .photo-item.dragging {
-            opacity: 0.5;
-            cursor: move;
-        }
-
-        /* 添加深色模式支持 */
-        @media (prefers-color-scheme: dark) {
-            body {
-                background-color: #1a1a1a;
-            }
-
-            .container {
-                background: rgba(30, 30, 30, 0.9);
-            }
-
-            h1 {
-                color: #ff7f50;
-            }
-
-            .photo-description {
-                color: #ddd;
-            }
-
-            #search-input {
-                background: #333;
-                color: #fff;
-                border-color: #444;
-            }
+        .edit-toolbar button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
+    <!-- 添加提示框 -->
+    <div class="toast" id="toast">操作成功</div>
+
+    <!-- 添加图片编辑工具栏 -->
+    <div class="edit-toolbar" id="edit-toolbar">
+        <button onclick="rotateImage(-90)">↺ 向左旋转</button>
+        <button onclick="rotateImage(90)">↻ 向右旋转</button>
+        <button onclick="downloadCurrentImage()">⬇️ 下载</button>
+    </div>
+
     <div class="container">
         <h1>我们的美好回忆</h1>
         
-        <div class="search-section">
-            <input type="text" id="search-input" placeholder="搜索照片描述...">
-        </div>
-
         <div class="upload-section">
-            <input type="file" id="photo-input" accept="image/*" style="display: none">
+            <input type="file" id="photo-input" accept="image/*" multiple style="display: none">
             <button id="upload-btn">添加新照片</button>
         </div>
 
         <div class="photo-grid" id="photo-grid"></div>
-
-        <div class="toast" id="toast">链接已复制到剪贴板！</div>
     </div>
 
     <div class="modal" id="preview-modal">
@@ -387,282 +299,230 @@
             <img id="preview-image" src="" alt="预览图片">
         </div>
     </div>
+
     <div class="loading" id="loading"></div>
 
     <script>
         const photoGrid = document.getElementById('photo-grid');
         const photoInput = document.getElementById('photo-input');
         const uploadBtn = document.getElementById('upload-btn');
-        const toast = document.getElementById('toast');
         const modal = document.getElementById('preview-modal');
         const previewImage = document.getElementById('preview-image');
         const loading = document.getElementById('loading');
 
-        // 修改数据加载方式，使用 localStorage
+        // 从localStorage加载照片
         let photos = JSON.parse(localStorage.getItem('photos') || '[]');
 
-        // 修改更新数据的方法
-        function updatePhotos() {
-            localStorage.setItem('photos', JSON.stringify(photos));
-            displayPhotos();
+        // 添加图片压缩功能
+        async function compressImage(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+                        
+                        // 限制最大尺寸
+                        const maxSize = 1200;
+                        if (width > maxSize) {
+                            height = (maxSize / width) * height;
+                            width = maxSize;
+                        }
+                        if (height > maxSize) {
+                            width = (maxSize / height) * width;
+                            height = maxSize;
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        // 压缩图片质量
+                        resolve(canvas.toDataURL('image/jpeg', 0.8));
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
         }
 
-        // 显示照片
+        // 显示提示信息
+        function showToast(message, duration = 2000) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, duration);
+        }
+
+        // 优化显示照片函数
         function displayPhotos() {
             photoGrid.innerHTML = '';
             photos.forEach((photo, index) => {
                 const photoItem = document.createElement('div');
                 photoItem.className = 'photo-item';
-                photoItem.draggable = true;
+                photoItem.style.animationDelay = `${index * 0.1}s`;
                 photoItem.innerHTML = `
-                    <img data-src="${photo.url || photo}" alt="回忆照片" 
-                         onclick="previewPhoto('${photo.url || photo}')"
-                         loading="lazy">
-                    <button class="delete-btn" onclick="deletePhoto(${index})">×</button>
+                    <img src="${photo.url}" alt="回忆照片" onclick="previewPhoto('${photo.url}', ${index})">
+                    <button class="delete-btn" onclick="deletePhoto(${index}, this)">×</button>
                     <div class="photo-actions">
-                        <button class="action-btn" onclick="rotatePhoto(${index}, -90)">↺</button>
-                        <button class="action-btn" onclick="rotatePhoto(${index}, 90)">↻</button>
-                        <button class="action-btn" onclick="addTag(${index})">+</button>
+                        <button class="action-btn" onclick="downloadPhoto('${photo.url}', ${index})">⬇️</button>
+                        <button class="action-btn" onclick="editPhoto(${index})">✎</button>
                     </div>
                     <div class="photo-description" contenteditable="true" 
-                         onblur="updateDescription(${index}, this.textContent)">
+                         onblur="updateDescription(${index}, this.textContent)"
+                         onfocus="this.textContent = this.textContent === '点击添加描述...' ? '' : this.textContent">
                         ${photo.description || '点击添加描述...'}
-                    </div>
-                    <div class="photo-tags">
-                        ${(photo.tags || []).map(tag => `<span class="tag">${tag}</span>`).join('')}
                     </div>
                 `;
                 photoGrid.appendChild(photoItem);
-                
-                // 观察图片元素
-                const img = photoItem.querySelector('img');
-                imageObserver.observe(img);
-                
-                addDragListeners(photoItem, index);
             });
         }
 
-        // 删除照片
-        function deletePhoto(index) {
+        // 保存照片到localStorage
+        function savePhotos() {
+            localStorage.setItem('photos', JSON.stringify(photos));
+            displayPhotos();
+        }
+
+        // 优化删除照片函数
+        async function deletePhoto(index, btn) {
+            const item = btn.parentElement;
+            item.classList.add('removing');
+            await new Promise(resolve => setTimeout(resolve, 300));
             photos.splice(index, 1);
-            updatePhotos();
+            savePhotos();
         }
 
-        // 显示提示消息
-        function showToast() {
-            toast.style.display = 'block';
-            setTimeout(() => {
-                toast.style.display = 'none';
-            }, 2000);
+        // 更新照片描述
+        function updateDescription(index, text) {
+            photos[index].description = text;
+            savePhotos();
         }
 
-        // 分享按钮点击事件
-        shareBtn.addEventListener('click', () => {
-            const currentURL = window.location.href;
-            navigator.clipboard.writeText(currentURL).then(() => {
-                showToast();
-            });
-        });
+        // 下载照片
+        function downloadPhoto(dataUrl, index) {
+            const link = document.createElement('a');
+            link.href = dataUrl;
+            link.download = `回忆照片_${index + 1}.jpg`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast('照片已开始下载');
+        }
 
-        // 修改上传照片的处理
-        photoInput.addEventListener('change', (e) => {
-            const files = e.target.files;
-            if (files) {
-                loading.style.display = 'block';
-                const promises = Array.from(files).map(file => {
-                    return new Promise((resolve) => {
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                            resolve(e.target.result);
-                        };
-                        reader.readAsDataURL(file);
-                    });
-                });
+        // 编辑照片
+        let currentEditingIndex = -1;
+        let currentRotation = 0;
 
-                Promise.all(promises).then(results => {
-                    results.forEach(result => {
-                        photos.push({
-                            url: result,
-                            description: ''
-                        });
-                    });
-                    updatePhotos();
-                    loading.style.display = 'none';
-                });
+        function editPhoto(index) {
+            currentEditingIndex = index;
+            currentRotation = 0;
+            previewPhoto(photos[index].url, index);
+            document.getElementById('edit-toolbar').style.display = 'block';
+        }
+
+        function rotateImage(degrees) {
+            currentRotation = (currentRotation + degrees) % 360;
+            previewImage.style.transform = `rotate(${currentRotation}deg)`;
+        }
+
+        function downloadCurrentImage() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = previewImage;
+
+            // 设置画布大小
+            if (currentRotation % 180 === 0) {
+                canvas.width = img.naturalWidth;
+                canvas.height = img.naturalHeight;
+            } else {
+                canvas.width = img.naturalHeight;
+                canvas.height = img.naturalWidth;
             }
-        });
 
-        // 添加上传按钮点击事件
+            // 在画布中心旋转并绘制图片
+            ctx.translate(canvas.width / 2, canvas.height / 2);
+            ctx.rotate((currentRotation * Math.PI) / 180);
+            ctx.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2);
+
+            // 下载处理后的图片
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/jpeg', 0.8);
+            link.download = `编辑后的照片_${currentEditingIndex + 1}.jpg`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast('照片已开始下载');
+        }
+
+        // 优化预览功能
+        function previewPhoto(src, index) {
+            previewImage.style.opacity = '0';
+            previewImage.style.transform = 'none';
+            currentRotation = 0;
+            previewImage.src = src;
+            modal.style.display = 'block';
+            setTimeout(() => {
+                previewImage.style.opacity = '1';
+            }, 100);
+        }
+
+        // 上传照片
         uploadBtn.addEventListener('click', () => {
             photoInput.click();
         });
 
-        // 预览照片
-        function previewPhoto(src) {
-            previewImage.src = src;
-            modal.style.display = 'block';
-        }
-
-        // 点击模态框关闭预览
-        modal.addEventListener('click', () => {
-            modal.style.display = 'none';
+        photoInput.addEventListener('change', async (e) => {
+            const files = e.target.files;
+            if (files) {
+                loading.style.display = 'block';
+                try {
+                    for (const file of files) {
+                        const compressedImage = await compressImage(file);
+                        photos.push({
+                            url: compressedImage,
+                            description: ''
+                        });
+                    }
+                    savePhotos();
+                } catch (error) {
+                    console.error('处理图片时出错:', error);
+                    alert('处理图片时出错，请重试');
+                } finally {
+                    loading.style.display = 'none';
+                    photoInput.value = ''; // 清空输入，允许重复选择相同文件
+                }
+            }
         });
 
-        // 更新照片描述
-        function updateDescription(index, text) {
-            if (!photos[index].description) {
-                photos[index] = {
-                    url: photos[index],
-                    description: text
-                };
-            } else {
-                photos[index].description = text;
-            }
-            updatePhotos();
-        }
+        // 关闭预览
+        modal.addEventListener('click', () => {
+            modal.style.display = 'none';
+            document.getElementById('edit-toolbar').style.display = 'none';
+        });
 
-        // 添加键盘事件支持
+        // ESC键关闭预览
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && modal.style.display === 'block') {
                 modal.style.display = 'none';
             }
         });
 
-        // 添加搜索功能
-        const searchInput = document.getElementById('search-input');
-        searchInput.addEventListener('input', () => {
-            const searchText = searchInput.value.toLowerCase();
-            const items = document.querySelectorAll('.photo-item');
-            items.forEach(item => {
-                const description = item.querySelector('.photo-description').textContent.toLowerCase();
-                const tags = Array.from(item.querySelectorAll('.tag')).map(tag => tag.textContent.toLowerCase());
-                const match = description.includes(searchText) || tags.some(tag => tag.includes(searchText));
-                item.style.display = match ? 'block' : 'none';
-            });
-        });
-
-        // 修改拖拽排序功能
-        function addDragListeners(item, index) {
-            item.addEventListener('dragstart', () => {
-                item.classList.add('dragging');
-                item.dataset.index = index;
-            });
-
-            item.addEventListener('dragend', () => {
-                item.classList.remove('dragging');
-            });
-
-            item.addEventListener('dragover', e => {
-                e.preventDefault();
-                const draggingItem = document.querySelector('.dragging');
-                const currentIndex = parseInt(draggingItem.dataset.index);
-                const newIndex = index;
-                if (currentIndex !== newIndex) {
-                    const [movedPhoto] = photos.splice(currentIndex, 1);
-                    photos.splice(newIndex, 0, movedPhoto);
-                    updatePhotos();
-                }
-            });
-        }
-
-        // 旋转照片
-        function rotatePhoto(index, degrees) {
-            const img = document.querySelector(`#photo-grid .photo-item:nth-child(${index + 1}) img`);
-            const currentRotation = parseInt(img.style.transform?.match(/-?\d+/) || 0);
-            img.style.transform = `rotate(${currentRotation + degrees}deg)`;
-        }
-
-        // 添加标签
-        function addTag(index) {
-            const tag = prompt('请输入标签名称：');
-            if (tag) {
-                if (!photos[index].tags) {
-                    photos[index].tags = [];
-                }
-                photos[index].tags.push(tag);
-                updatePhotos();
-            }
-        }
-
-        // 初始显示照片
-        displayPhotos();
-
-        // 添加背景图加载检测
-        window.addEventListener('load', async () => {
-            try {
-                await loadImage('./background.jpg');
-                document.body.classList.add('loaded');
-            } catch (error) {
-                console.error('背景图片加载失败:', error);
-                // 使用备用背景色
-                document.body.style.backgroundColor = '#f5f5f5';
-            }
-        });
-
-        // 优化图片加载
-        function loadImage(url) {
-            return new Promise((resolve, reject) => {
-                const img = new Image();
-                img.onload = () => resolve(img);
-                img.onerror = reject;
-                img.src = url;
-            });
-        }
-
-        // 添加图片懒加载
-        if ('IntersectionObserver' in window) {
-            const imageObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const img = entry.target;
-                        img.src = img.dataset.src;
-                        observer.unobserve(img);
-                    }
-                });
-            });
-
-            // 修改显示照片函数
-            function displayPhotos() {
-                photoGrid.innerHTML = '';
-                photos.forEach((photo, index) => {
-                    const photoItem = document.createElement('div');
-                    photoItem.className = 'photo-item';
-                    photoItem.draggable = true;
-                    photoItem.innerHTML = `
-                        <img data-src="${photo.url || photo}" alt="回忆照片" 
-                             onclick="previewPhoto('${photo.url || photo}')"
-                             loading="lazy">
-                        <button class="delete-btn" onclick="deletePhoto(${index})">×</button>
-                        <div class="photo-actions">
-                            <button class="action-btn" onclick="rotatePhoto(${index}, -90)">↺</button>
-                            <button class="action-btn" onclick="rotatePhoto(${index}, 90)">↻</button>
-                            <button class="action-btn" onclick="addTag(${index})">+</button>
-                        </div>
-                        <div class="photo-description" contenteditable="true" 
-                             onblur="updateDescription(${index}, this.textContent)">
-                            ${photo.description || '点击添加描述...'}
-                        </div>
-                        <div class="photo-tags">
-                            ${(photo.tags || []).map(tag => `<span class="tag">${tag}</span>`).join('')}
-                        </div>
-                    `;
-                    photoGrid.appendChild(photoItem);
-                    
-                    // 观察图片元素
-                    const img = photoItem.querySelector('img');
-                    imageObserver.observe(img);
-                    
-                    addDragListeners(photoItem, index);
-                });
-            }
-        }
-
-        // 添加错误处理
+        // 优化错误处理
         window.addEventListener('error', (e) => {
             if (e.target.tagName === 'IMG') {
                 e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"%3E%3Cpath fill="%23ccc" d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/%3E%3C/svg%3E';
+                showToast('图片加载失败');
             }
         }, true);
+
+        // 初始化
+        displayPhotos();
     </script>
 </body>
 </html>
