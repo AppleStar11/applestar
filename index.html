@@ -368,10 +368,6 @@
     <div class="container">
         <h1>我们的美好回忆</h1>
         
-        <div class="share-section">
-            <button class="share-btn" id="share-btn">生成分享链接</button>
-        </div>
-
         <div class="search-section">
             <input type="text" id="search-input" placeholder="搜索照片描述...">
         </div>
@@ -397,22 +393,18 @@
         const photoGrid = document.getElementById('photo-grid');
         const photoInput = document.getElementById('photo-input');
         const uploadBtn = document.getElementById('upload-btn');
-        const shareBtn = document.getElementById('share-btn');
         const toast = document.getElementById('toast');
         const modal = document.getElementById('preview-modal');
         const previewImage = document.getElementById('preview-image');
         const loading = document.getElementById('loading');
 
-        // 从URL加载照片数据
-        let photos = [];
-        const urlParams = new URLSearchParams(window.location.hash.slice(1));
-        const sharedData = urlParams.get('photos');
-        if (sharedData) {
-            try {
-                photos = JSON.parse(atob(sharedData));
-            } catch (e) {
-                console.error('无法解析分享数据');
-            }
+        // 修改数据加载方式，使用 localStorage
+        let photos = JSON.parse(localStorage.getItem('photos') || '[]');
+
+        // 修改更新数据的方法
+        function updatePhotos() {
+            localStorage.setItem('photos', JSON.stringify(photos));
+            displayPhotos();
         }
 
         // 显示照片
@@ -453,14 +445,7 @@
         // 删除照片
         function deletePhoto(index) {
             photos.splice(index, 1);
-            updateShareURL();
-            displayPhotos();
-        }
-
-        // 更新分享URL
-        function updateShareURL() {
-            const encodedData = btoa(JSON.stringify(photos));
-            window.location.hash = `photos=${encodedData}`;
+            updatePhotos();
         }
 
         // 显示提示消息
@@ -501,8 +486,7 @@
                             description: ''
                         });
                     });
-                    updateShareURL();
-                    displayPhotos();
+                    updatePhotos();
                     loading.style.display = 'none';
                 });
             }
@@ -534,7 +518,7 @@
             } else {
                 photos[index].description = text;
             }
-            updateShareURL();
+            updatePhotos();
         }
 
         // 添加键盘事件支持
@@ -557,7 +541,7 @@
             });
         });
 
-        // 添加拖拽排序功能
+        // 修改拖拽排序功能
         function addDragListeners(item, index) {
             item.addEventListener('dragstart', () => {
                 item.classList.add('dragging');
@@ -574,11 +558,9 @@
                 const currentIndex = parseInt(draggingItem.dataset.index);
                 const newIndex = index;
                 if (currentIndex !== newIndex) {
-                    // 重新排序照片数组
                     const [movedPhoto] = photos.splice(currentIndex, 1);
                     photos.splice(newIndex, 0, movedPhoto);
-                    updateShareURL();
-                    displayPhotos();
+                    updatePhotos();
                 }
             });
         }
@@ -598,8 +580,7 @@
                     photos[index].tags = [];
                 }
                 photos[index].tags.push(tag);
-                updateShareURL();
-                displayPhotos();
+                updatePhotos();
             }
         }
 
