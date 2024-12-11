@@ -365,17 +365,18 @@
             photos.forEach((photo, index) => {
                 const photoItem = document.createElement('div');
                 photoItem.className = 'photo-item';
-                photoItem.style.animationDelay = `${index * 0.1}s`;
                 photoItem.innerHTML = `
-                    <img src="${photo.url}" alt="回忆照片" onclick="previewPhoto('${photo.url}', ${index})">
+                    <img src="${photo.url}" 
+                         alt="回忆照片" 
+                         onclick="previewPhoto('${photo.url}', ${index})"
+                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\'%3E%3Cpath fill=\'%23ccc\' d=\'M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z\'/%3E%3C/svg%3E';">
                     <button class="delete-btn" onclick="deletePhoto(${index}, this)">×</button>
                     <div class="photo-actions">
                         <button class="action-btn" onclick="downloadPhoto('${photo.url}', ${index})">⬇️</button>
                         <button class="action-btn" onclick="editPhoto(${index})">✎</button>
                     </div>
                     <div class="photo-description" contenteditable="true" 
-                         onblur="updateDescription(${index}, this.textContent)"
-                         onfocus="this.textContent = this.textContent === '点击添加描述...' ? '' : this.textContent">
+                         onblur="updateDescription(${index}, this.textContent)">
                         ${photo.description || '点击添加描述...'}
                     </div>
                 `;
@@ -483,19 +484,42 @@
                 loading.style.display = 'block';
                 try {
                     for (const file of files) {
-                        const compressedImage = await compressImage(file);
-                        photos.push({
-                            url: compressedImage,
-                            description: ''
-                        });
+                        // 添加错误处理
+                        if (!file.type.startsWith('image/')) {
+                            showToast('请选择图片文件');
+                            continue;
+                        }
+                        
+                        const reader = new FileReader();
+                        reader.onload = async (e) => {
+                            try {
+                                const compressedImage = await compressImage(file);
+                                photos.push({
+                                    url: compressedImage,
+                                    description: '',
+                                    timestamp: Date.now()
+                                });
+                                savePhotos();
+                                showToast('照片上传成功');
+                            } catch (error) {
+                                console.error('压缩图片失败:', error);
+                                showToast('处理图片失败，请重试');
+                            }
+                        };
+                        
+                        reader.onerror = () => {
+                            console.error('读取文件失败');
+                            showToast('读取文件失败，请重试');
+                        };
+                        
+                        reader.readAsDataURL(file);
                     }
-                    savePhotos();
                 } catch (error) {
-                    console.error('处理图片时出错:', error);
-                    alert('处理图片时出错，请重试');
+                    console.error('上传图片时出错:', error);
+                    showToast('上传失败，请重试');
                 } finally {
                     loading.style.display = 'none';
-                    photoInput.value = ''; // 清空输入，允许重复选择相同文件
+                    photoInput.value = '';
                 }
             }
         });
@@ -520,6 +544,13 @@
                 showToast('图片加载失败');
             }
         }, true);
+
+        // 添加错误处理
+        window.onerror = function(msg, url, line) {
+            console.error(`Error: ${msg}\nURL: ${url}\nLine: ${line}`);
+            showToast('发生错误，请刷新页面重试');
+            return false;
+        };
 
         // 初始化
         displayPhotos();
